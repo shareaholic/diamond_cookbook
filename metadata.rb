@@ -3,7 +3,7 @@ maintainer_email 'cbarraford@gmail.com'
 license          'All rights reserved'
 description      'Installs/Configures diamond'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '2.1.1.pre'
+version          '2.1.1'
 name             'diamond'
 issues_url       'https://github.com/CBarraford/diamond_cookbook/issues'
 source_url       'https://github.com/CBarraford/diamond_cookbook'
