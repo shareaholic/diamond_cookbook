@@ -1,15 +1,8 @@
 include_recipe 'build-essential'
 include_recipe 'git::default'
 
-case node['platform_family']
-when 'debian'
-  include_recipe 'apt::default'
-
-  # needed to generate deb package
-  package 'devscripts'
-  platform_version = node['platform_version'].to_f
-  # python-support_all.deb is not installable under Ubuntu 22.04
-  if node['platform'] == 'ubuntu' && platform_version >= 16.04 && platform_version < 22.04
+def install_python_support
+   if node['platform'] == 'ubuntu' && node['platform_version'].to_f >= 16.04
     package_target = '/tmp/python-support_all.deb'
     remote_file package_target do
       source 'http://launchpadlibrarian.net/109052632/python-support_1.0.15_all.deb'
@@ -24,11 +17,25 @@ when 'debian'
   else
     package 'python-support'
   end
+end
 
-  package 'python-pkg-resources'
-  package 'python-configobj'
-  package 'python-mock'
-  package 'cdbs'
+case node['platform_family']
+when 'debian'
+  include_recipe 'apt::default'
+
+  # needed to generate deb package
+  package 'devscripts'
+
+  if node['platform'] == 'ubuntu' && node['platform_version'].to_f == 22.04
+    # Do something very important here.
+  else
+    install_python_support
+
+    package 'python-pkg-resources'
+    package 'python-configobj'
+    package 'python-mock'
+    package 'cdbs'
+  end
 when 'rhel'
   include_recipe 'yum::default'
 

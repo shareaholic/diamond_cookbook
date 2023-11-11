@@ -16,7 +16,12 @@ default['diamond']['path_prefix'] = 'servers'
 default['diamond']['hostname_method'] = 'smart'
 default['diamond']['interval'] = '300'
 default['diamond']['handlers'] = 'diamond.handler.graphite.GraphiteHandler, diamond.handler.archive.ArchiveHandler'
-default['diamond']['source_repository'] = 'git://github.com/python-diamond/Diamond.git'
+if node['platform'] == 'ubuntu' && node['platform_version'].to_f == 22.04
+  default['diamond']['source_repository'] = 'https://github.com/shareaholic/python-diamond.git'
+  default['diamond']['source_reference'] = 'ubuntu22'
+else
+  default['diamond']['source_repository'] = 'https://github.com/python-diamond/Diamond.git'
+  default['diamond']['source_reference'] = 'master'
+end
 default['diamond']['source_path'] = '/usr/local/share/diamond_src'
-default['diamond']['source_reference'] = 'master'
 default['diamond']['add_collectors'] = %w(cpu diskspace diskusage loadavg memory network vmstat tcp)
