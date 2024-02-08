@@ -27,7 +27,19 @@ when 'debian'
   package 'devscripts'
 
   if node['platform'] == 'ubuntu' && node['platform_version'].to_f == 22.04
-    # Do something very important here.
+    execute 'updating apt' do
+      command 'apt-get update'
+    end
+    python_runtime '2.7' do
+        options :system, package_name: 'python2.7'
+    end
+    python_package 'configobj' do
+      python '/usr/bin/python2.7'
+    end
+    package 'debhelper'
+    package 'python-setuptools'
+    package 'dh-python'
+    package 'cdbs'
   else
     install_python_support
 

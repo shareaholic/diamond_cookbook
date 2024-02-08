@@ -4,8 +4,6 @@ service 'diamond' do
   action [:nothing]
 end
 
-include_recipe "diamond::_install_#{node['diamond']['install_method']}"
-
 if node['diamond']['graphite_server_role'].nil?
   graphite_ip = node['diamond']['graphite_server']
 else
@@ -19,6 +17,13 @@ else
       graphite_ip = graphite_nodes[0]['fqdn']
     end
   end
+end
+
+directory '/etc/diamond' do
+  owner node['diamond']['user']
+  group node['diamond']['group']
+  mode '0644'
+  recursive true
 end
 
 template '/etc/diamond/diamond.conf' do
@@ -36,6 +41,8 @@ template '/etc/diamond/diamond.conf' do
   )
 end
 
+include_recipe "diamond::_install_#{node['diamond']['install_method']}"
+
 template '/etc/default/diamond' do
   source 'diamond-env.erb'
   owner node['diamond']['user']
@@ -45,6 +52,12 @@ template '/etc/default/diamond' do
 end
 
 # Install collectors
+directory '/etc/diamond/collectors' do
+  owner node['diamond']['user']
+  group node['diamond']['group']
+  mode '0644'
+end
+
 node['diamond']['add_collectors'].each do |collector|
   include_recipe "diamond::#{collector}"
 end
